@@ -11,6 +11,19 @@ class CountryRoles(Cog):
     def __init__(self, bot):
         """Initializes the cog's bot"""
         self.bot = bot
+        
+        for guild in bot.guilds:
+            try:
+                country_roles = list(filter(lambda x: x.name in COUNTRIES, guild.roles))
+                sort_this = [(role.name, role) for role in country_roles]
+                positions = [role.position for role in country_roles]
+                hoisted = [role.hoist for role in country_roles]
+                if (x := sorted(sort_this, reverse=True)) != sort_this or not all(hoisted):
+                    for index, name_role in enumerate(x):
+                        name, role = name_role
+                        await role.edit(hoist = True, position = positions[index])
+             except:
+                pass
 
     @command(description='Adds all country roles and sets up react messages')
     @has_permissions(administrator=True)
